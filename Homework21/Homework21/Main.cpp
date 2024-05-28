@@ -1,40 +1,69 @@
 #include <iostream>
 
-class A
+class IA
 {
 public:
-	virtual void Show()
+	IA()
 	{
-		std::cout << "A";
+		std::cout << "A constructed\n";
 	}
-	virtual A* GetSelf()
+	~IA()
 	{
-		return this;
+	}
+	virtual void ShowInfo() = 0;
+};
+
+void IA::ShowInfo()
+{
+	std::cout << "default implementation\n";
+}
+
+class B : virtual public IA
+{
+public:
+	B()
+	{
+		std::cout << "B constructed\n";
+	}
+	~B()
+	{
+	}
+	virtual void ShowInfo() override
+	{
+		IA::ShowInfo();
+		std::cout << "Show info in class B\n";
 	}
 };
 
-class B : public A
+class C : virtual public IA
 {
 public:
-	void Show() override
+	C()
 	{
-		std::cout << "B";
+		std::cout << "C constructed\n";
 	}
-	B* GetSelf() override
+	~C() {}
+	virtual void ShowInfo() override
 	{
-		return this;
+		IA::ShowInfo();
 	}
-	void Test()
+};
+
+class D : virtual public B, virtual public C
+{
+public:
+	D()
 	{
-		std::cout << "Only in class B";
+		std::cout << "D constructed\n";
+	}
+	virtual void ShowInfo() override
+	{
+		IA::ShowInfo();
 	}
 };
 
 int main()
 {
-	A* p = new B;
-	auto newPointer = static_cast<B*>(p->GetSelf());
-	newPointer->Test();
-	auto anotherNewPtr = newPointer->GetSelf();
-	anotherNewPtr->Test();
+	D* p = new D;
+	delete p;
 }
